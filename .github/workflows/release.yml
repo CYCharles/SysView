@@ -1,0 +1,82 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      matrix:
+        include:
+          - goarch: amd64
+            suffix: x64
+            mingw_dir: C:\msys64\mingw64\bin
+          - goarch: "386"
+            suffix: x86
+            mingw_dir: C:\msys64\mingw32\bin
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+
+      - name: Install MinGW (x64)
+        if: matrix.goarch == 'amd64'
+        run: |
+          choco install mingw -y --no-progress
+          echo "C:\msys64\mingw64\bin" >> $env:GITHUB_PATH
+
+      - name: Install MinGW (x86)
+        if: matrix.goarch == '386'
+        run: |
+          choco install msys2 -y --no-progress
+          C:\msys64\usr\bin\bash.exe -lc "pacman -S --noconfirm mingw-w64-i686-gcc"
+          echo "C:\msys64\mingw32\bin" >> $env:GITHUB_PATH
+
+      - name: Build
+        env:
+          CGO_ENABLED: 1
+          GOOS: windows
+          GOARCH: ${{ matrix.goarch }}
+        run: |
+          go build -ldflags="-s -w -H windowsgui" -o SysView_${{ matrix.suffix }}.exe .
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SysView-${{ matrix.suffix }}
+          path: SysView_${{ matrix.suffix }}.exe
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download x64
+        uses: actions/download-artifact@v4
+        with:
+          name: SysView-x64
+          path: ./release
+
+      - name: Download x86
+        uses: actions/download-artifact@v4
+        with:
+          name: SysView-x86
+          path: ./release
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ./release/SysView_x64.exe|./release/SysView_x86.exe
+          generate_release_notes: true

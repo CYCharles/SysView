@@ -138,6 +138,15 @@ go build -ldflags="-s -w -H windowsgui" -o SysView_x86.exe
 - **全兼容** — Win7 ~ Win11 全系 32 位 / 64 位适配
 - **专业 UI** — 仿 CPU-Z 分页标签式界面，分类清晰、参数整齐
 
+## 下载
+
+| 版本 | 下载链接 |
+|------|---------|
+| 64 位 | [SysView_x64.exe](https://github.com/CYCharles/SysView/releases/latest/download/SysView_x64.exe) |
+| 32 位 | [SysView_x86.exe](https://github.com/CYCharles/SysView/releases/latest/download/SysView_x86.exe) |
+
+> 首次发布前需先推送 tag 触发 GitHub Actions 自动构建（见下方说明）。
+
 ## 安全说明
 
 - 仅**只读读取**硬件公开参数，无写入、无修改、无系统篡改

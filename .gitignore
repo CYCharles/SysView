@@ -1,0 +1,20 @@
+# Binaries
+*.exe
+SysView_x64.exe
+SysView_x86.exe
+
+# Build artifacts
+build_err.txt
+build_log.txt
+build.ps1
+stderr.log
+stdout.log
+
+# Go
+*.test
+*.out
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
