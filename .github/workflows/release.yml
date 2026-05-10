@@ -17,10 +17,8 @@ jobs:
         include:
           - goarch: amd64
             suffix: x64
-            mingw_dir: C:\msys64\mingw64\bin
           - goarch: "386"
             suffix: x86
-            mingw_dir: C:\msys64\mingw32\bin
 
     steps:
       - name: Checkout
@@ -63,20 +61,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Download x64
+      - name: Download x64 artifact
         uses: actions/download-artifact@v4
         with:
           name: SysView-x64
           path: ./release
 
-      - name: Download x86
+      - name: Download x86 artifact
         uses: actions/download-artifact@v4
         with:
           name: SysView-x86
           path: ./release
 
+      - name: List files
+        run: ls -la ./release/
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ./release/SysView_x64.exe|./release/SysView_x86.exe
+          files: |
+            ./release/SysView_x64.exe
+            ./release/SysView_x86.exe
           generate_release_notes: true
