@@ -1,0 +1,2 @@
+[ERROR] CPU WMI Query failed: wmi: cannot load field "Voltage" into a "*uint32": no such struct field
+[ERROR] Memory WMI Query failed: wmi: cannot load field "ConfiguredVoltage" into a "*float32": not an integer class
